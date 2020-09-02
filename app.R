@@ -108,7 +108,12 @@ server <- function(input, output, session) {
   
   observe({
     if(!input$applycluster){
-      plotcolors=as.vector(polychrome(length(complete)))
+      if(length(complete)>36){
+        plotcolors=as.vector(c(polychrome(36),glasbey((length(complete)-36))))
+      }
+      else{
+        plotcolors=as.vector(polychrome(length(complete)))
+      }
     }
     else{
       plotcolors=as.color(unname(clusters[[input$choosecluster]]),0.9)
@@ -180,7 +185,7 @@ server <- function(input, output, session) {
     })
 
   
-      if(input$compare==TRUE){
+      if(input$compare){
         predicted1 <- function(){
           vari = input$col1
           timeMulti= TimeSeries[[vari]][,input$countries]

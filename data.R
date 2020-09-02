@@ -11,7 +11,6 @@ data= read.csv("https://covid.ourworldindata.org/data/owid-covid-data.csv")
 data$RDate <- as.Date(data$date, "%Y-%m-%d")
 
 data$new_cases_per_new_tests = data$new_cases/data$new_tests
-
 data$new_deaths_per_new_cases = data$new_deaths/data$new_cases
 data$infestation = data$total_cases/data$population
 # create list of countries with maximal observations
@@ -42,9 +41,9 @@ TimeSeries=lapply(all,function(x) do.call(cbind,x))
 TimeSeries=TimeSeries[c(3:length(TimeSeries))]
 
 smoothTS = TimeSeries[-c(9:12)]
-smoothTS[-c(9:12)] = lapply(smoothTS[-c(9:12)],function(x) apply(x,2,na.interp))
-smoothTS[-c(9:12)] = lapply(smoothTS[-c(9:12)],function(x) apply(x,2,SMA,n=10))
-smoothTS[-c(9:12)] = lapply(smoothTS[-c(9:12)],function(x) ts(x,start=min(data$RDate), end=max(data$RDate)))
+smoothTS[-c(7:13)] = lapply(smoothTS[-c(7:13)],function(x) apply(x,2,na.interp))
+smoothTS[-c(7:13)] = lapply(smoothTS[-c(7:13)],function(x) apply(x,2,SMA,n=10))
+smoothTS[-c(7:13)] = lapply(smoothTS[-c(7:13)],function(x) ts(x,start=min(data$RDate), end=max(data$RDate)))
 
 
 names(smoothTS)[-c(9:12)]=lapply(names(smoothTS)[-c(9:12)],function(x) paste0(x,"_smoothed"))
@@ -86,7 +85,7 @@ TimeSeries=c(smoothTS,TimeSeries)
 
 # calculate cluster
 TimeSeriesList = lapply(TimeSeries[c(5:8)],as.list)
-
+TimeSeriesList = lapply(TimeSeriesList,function(x) lapply(x,is.na))
 TimeSeriesList = lapply(TimeSeriesList,function(x) lapply(x,na_interpolation))
 #test=as.list(TimeSeries$total_cases_smoothed)
 #test=lapply(test,na_interpolation)
