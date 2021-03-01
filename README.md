@@ -5,7 +5,4 @@ The dataset used for this project is maintained by ourworldindata, which is base
 It can be found here: 
 https://github.com/owid/covid-19-data/tree/master/public/data
 
-The Shiny App is directly executable in RStudio. It consists of two Skript, "app.R" which contains the app itself and "data.R" in which the data obtained from ourworldindata is preprocessed.
-
-The app is also available on shinyapps.io:
-https://jliekenbrock.shinyapps.io/dygraphs/
+Since the data used in this project changed a lot since this project was done the app is no longer usable.
