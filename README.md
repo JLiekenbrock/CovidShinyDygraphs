@@ -5,4 +5,4 @@ The dataset used for this project is maintained by ourworldindata, which is base
 It can be found here: 
 https://github.com/owid/covid-19-data/tree/master/public/data
 
-Since the data used in this project changed a lot since this project was done the app is no longer usable.
+Since the data used in this project changed a lot since this project was done this app is currently not usable.
