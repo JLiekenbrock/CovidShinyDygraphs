@@ -5,5 +5,5 @@ The dataset used for this project is maintained by ourworldindata, which is base
 It can be found here: 
 https://github.com/owid/covid-19-data/tree/master/public/data
 
-The App is availabe here:
+The app is availabe here:
 https://jliekenbrock.shinyapps.io/dygraphs/
