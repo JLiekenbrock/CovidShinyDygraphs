@@ -49,21 +49,13 @@ ui <- fluidPage(
     column(width=3,
            selectInput("col", "Select a variable", originalvars,originalvars[2]),
     ),
-    column(width=1,
-           checkboxInput("smooth", "smoothed", TRUE),      
-    ),
     column(width=3,
            conditionalPanel(
              condition = "input.compare == true",
              selectInput("col1", "Select a variable for plot 2", originalvars,originalvars[4]),
            ),    
     ),
-    column(width=1,
-           conditionalPanel(
-            condition= "input.compare == true",
-            checkboxInput("smooth1", "smoothed", TRUE),      
-           )
-    ),
+
     column(width=3,
            selectInput("choosecluster", "Select variable to cluster by", names(clusters)),
     ),
@@ -80,32 +72,6 @@ ui <- fluidPage(
 )
 
 server <- function(input, output, session) {
-  observeEvent(input$smooth,{
-    if(input$smooth){
-      updateSelectInput(
-        session, "col", choices=smoothvars
-      )
-    }
-    else{
-      updateSelectInput(
-        session, "col", choices=originalvars
-      )
-    }
-  })
-  
-  observeEvent(input$smooth1,{
-    if(input$smooth1){
-      updateSelectInput(
-        session, "col1", choices=smoothvars
-      )
-    }
-    else{
-      updateSelectInput(
-        session, "col1", choices=originalvars
-      )
-    }
-  })
-  
   observe({
     if(!input$applycluster){
       if(length(complete)>36){

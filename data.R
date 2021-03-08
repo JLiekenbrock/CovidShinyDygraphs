@@ -14,8 +14,19 @@ data$new_cases_per_new_tests = data$new_cases/data$new_tests
 data$new_deaths_per_new_cases = data$new_deaths/data$new_cases
 data$infestation = data$total_cases/data$population
 # create list of countries with maximal observations
-tab <- table(data$location)
-complete <- names(tab)[tab==max(tab)]
+
+
+
+oecd = c("Austria", "Belgium", "Czechia", "Denmark", 
+         "Estonia", "Finland", "France", "Germany", "Greece", 
+         "Hungary", "Iceland", "Ireland", "Italy", "Latvia", 
+         "Lithuania", "Luxembourg", "Netherlands", "Norway", 
+         "Poland", "Portugal", "Slovakia", "Slovenia", 
+         "Spain", "Sweden", "Switzerland", "United Kingdom",
+         "Canada", "Chile", "Colombia", "Mexico", "United States",
+         "Australia", "Japan", "South Korea", "New Zealand", "Israel", "Turkey")
+
+complete <- oecd
 completedata = subset(data, data$location %in% complete)
 
 # Subset Data for creating Timeseries
@@ -40,51 +51,11 @@ names(all)=colnames
 TimeSeries=lapply(all,function(x) do.call(cbind,x))
 TimeSeries=TimeSeries[c(3:length(TimeSeries))]
 
-smoothTS = TimeSeries[-c(9:12)]
-smoothTS[-c(7:13)] = lapply(smoothTS[-c(7:13)],function(x) apply(x,2,na.interp))
-smoothTS[-c(7:13)] = lapply(smoothTS[-c(7:13)],function(x) apply(x,2,SMA,n=10))
-smoothTS[-c(7:13)] = lapply(smoothTS[-c(7:13)],function(x) ts(x,start=min(data$RDate), end=max(data$RDate)))
-
-
-names(smoothTS)[-c(9:12)]=lapply(names(smoothTS)[-c(9:12)],function(x) paste0(x,"_smoothed"))
-
-RVal <- function(ts){
-  R=rep(NA, length(ts)) 
-  for (t in 11:length(ts)) { 
-    R[t-1] <- sum(ts[t-0:6]) / sum(ts[t-4:10]) 
-  }
-  R=ts(R, start=min(data$RDate), end=max(data$RDate))
-  return(R)
-} 
-
-
-
-RWert = lapply(smoothTS$new_cases_smoothed, RVal )
-RMulti <- do.call(cbind, RWert)
-
-smoothTS[[length(smoothTS)+1]]=RMulti
-
-# doubing time
-doublingTime = function(RValue){
-  return(log(2)/log(RValue))
-}
-
-doubleVal = lapply(RWert,doublingTime)
-dobuleMulti = do.call(cbind, doubleVal)
-
-smoothTS[[length(smoothTS)+1]]=dobuleMulti
-
-names(smoothTS)[names(smoothTS)==""]=c("R_Value","doubling_Times")
-
-smoothvars=names(smoothTS)[-c(11:12)]
-
 originalvars=names(TimeSeries)[-c(13:14)]
-
-TimeSeries=c(smoothTS,TimeSeries)
 
 
 # calculate cluster
-TimeSeriesList = lapply(TimeSeries[c(5:8)],as.list)
+TimeSeriesList = lapply(TimeSeries[c("new_cases_smoothed_per_million","new_deaths_smoothed_per_million")],as.list)
 TimeSeriesList = lapply(TimeSeriesList,function(x) lapply(x,is.na))
 TimeSeriesList = lapply(TimeSeriesList,function(x) lapply(x,na_interpolation))
 #test=as.list(TimeSeries$total_cases_smoothed)
@@ -94,6 +65,5 @@ TimeSeriesList = lapply(TimeSeriesList,function(x) lapply(x,na_interpolation))
 dd = lapply(TimeSeriesList,dist,method="DTW")
 
 hc3 = lapply(dd,hclust,method="mcquitty")
-
 
 clusters=lapply(hc3,cutree, 5)
